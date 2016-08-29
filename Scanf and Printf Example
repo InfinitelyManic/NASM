@@ -1,4 +1,4 @@
-; david @InfinitlyManic                                                                                                                                             
+; david @InfinitelyManic                                                                                                                                         
 ; New Assembly Programming Challenge - prompt use to enter a number between 0 & 9 and tell user that # is odd or even ...                                           
 ; executable: challenge_64                                                                                                                                          
 ; The executable was written for NASM 64-bit assembly; compiled and tested as indicated below.;                                                                                                                                                                   
