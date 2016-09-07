@@ -1,0 +1,35 @@
+; ---- reverse the digits of a number
+%macro reverseN 1
+        ; original  = rsi
+        ; dividend = rax
+        ; remainder = rdx
+        ; dividend == 10  = rbx
+        ; temp = rcx
+        ; reverse = rdi
+        ; ---- save registers
+        fpushregs
+        ;--------------------
+        mov rsi, %1     ; original
+        mov rbx, 10     ; divisor
+        xor rdx, rdx    ; initialize remainder
+        xor rdi, rdi    ; initialize reverse
+        %%loop:
+                mov rax, rsi    ; s/u dividend
+                xor rdx, rdx    ; clear remainder
+                div rbx         ; original % 10 is in rdx = reminder
+                mov rcx, rdx    ; temp copy remainder
+
+                ; we know this works; however, we want unsigned multiplication
+                imul rdi, rbx   ; reverse * 10 ---------------
+                add rdi, rdx    ; reverse * 10 + remainder
+                xor rdx, rdx    ; clear reminder
+
+                mov rax, rsi    ; temp copy original to rcx
+                div rbx         ; original / 10
+                mov rsi, rax    ; update original
+                cmp rsi, 0
+                jnz %%loop
+        mov rax, rdi            ; return reverse in rax
+
+        fpopregs
+%endmacro
