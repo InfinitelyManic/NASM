@@ -1,0 +1,29 @@
+; ---- gcd for two numbers ------
+%macro gcd 2
+        fpushregs
+        mov r8, %1      ; save x
+        mov r9, %2      ; save y
+        %%loop0:
+                cmp r8, r9      ; is x > y
+                jge %%loop1     ; if so then jmp to next
+                xchg r8, r9     ; swap x & y if x < y
+        %%loop1:
+                mov rax, r8     ; dividend
+                mov rbx, r9     ; divisor
+                xor rdx, rdx    ; prep rdx
+
+                idiv rbx        ; divide dividend
+                mov r8, rdx     ; x =% y
+
+                cmp r8, 0       ; if x == y then we are done
+                je %%exit1
+
+                cmp r8, r9      ; if x < y then swap
+                jl %%loop0
+
+                cmp r8, 0       ; if x > 0 then repeat
+                jng %%loop1
+        %%exit1:
+        mov rax, r9
+        fpopregs
+%endmacro
