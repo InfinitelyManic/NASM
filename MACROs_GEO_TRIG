@@ -1,0 +1,81 @@
+        ; ********* GEO/TRIG  MACROS ****************************
+        %macro L_W 2
+        %%.L_W:
+        mov rax, %1
+        sub rax, %2
+        %endmacro
+
+        %macro perimeter_tri 3
+        %%.perimter_tri:
+        mov rax, %1
+        add rax, %2
+        add rax, %3
+        %endmacro
+
+        %macro perimeter_rec 2
+        %%.perimter_rec:
+        push rbx
+        mov rax, %1
+        imul rax, 2
+        mov rbx, %2
+        imul rbx, 2
+        add rax, rbx
+        pop rbx
+        %endmacro
+
+        %macro area_rec 2
+        %%.area_rec:
+        mov rax, %1
+        imul rax, %2
+        %endmacro
+
+        %macro area_tri 3
+        %%.area_tri:
+        cvtsi2sd xmm10, %1              ; a float
+        cvtsi2sd xmm11, %2              ; b float
+        cvtsi2sd xmm12, %3              ; c float
+
+        %%.semi_perimeter:              ; (a+b+c)/2
+        movsd xmm13, xmm10              ; copy a
+        addsd xmm13, xmm11              ; a+b
+        addsd xmm13, xmm12              ; a+b+c
+        divsd xmm13, [TWO]              ; (a+b+c)/2 == s
+
+        %%.herons_area:                 ; sqrt(s(s-a)(s-b)(s-c))
+        movsd xmm0, xmm10               ; copy a
+        movsd xmm1, xmm11               ; copy b
+        movsd xmm2, xmm12               ; copy c
+        movsd xmm10, xmm13              ; s
+        subsd xmm10, xmm0               ; s-a
+        movsd xmm11, xmm13              ; s
+        subsd xmm11, xmm1               ; s-b
+        movsd xmm12, xmm13              ; s
+        subsd xmm12, xmm2               ; s-c
+
+        mulsd xmm13, xmm10              ; s(s-a)
+        mulsd xmm13, xmm11              ; s(s-a)(s-b)
+        mulsd xmm13, xmm12              ; s(s-a)(s-b)(s-c)
+        sqrtsd  xmm13, xmm13            ; sqrt(s(s-a)(s-b)(s-c))
+        movsd xmm0, xmm13
+        %endmacro
+
+        %macro get_C 2
+        %%.get_C:               ; this macro finds C in the Pythagorean triple A^2+B^2==C^2 and returns C if it's an integer else 0
+        cvtsi2sd xmm0, %1       ; convert A to float
+        cvtsi2sd xmm1, %2       ; convert B to float
+        mulsd xmm0, xmm0        ; A^2
+        mulsd xmm1, xmm1        ; B^2
+        addsd xmm1, xmm0        ; A^2+B^2 == C^2
+        movsd xmm0, xmm1        ; save copy of C^2 as float
+        sqrtsd xmm1, xmm1       ; sqrt(C^2) == C
+        cvtsd2si rax, xmm1      ; convert C to int
+        imul rax, rax           ; calc C^2 from int
+        cvtsi2sd xmm2, rax      ; convert C^2 back to float
+        ucomisd xmm0, xmm2      ; C^2 float == C2^ from int ; really just an integer test
+        cvtsd2si rax, xmm1      ; set up return C
+        je %%.exit              ;
+        xor rax, rax            ; if C is not an int then return 0
+        %%.exit:
+        %endmacro
+
+        ; ********* END  MACROS ****************************
