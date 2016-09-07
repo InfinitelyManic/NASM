@@ -1,0 +1,38 @@
+; ----sumDigits .... returns sum of digits in rax
+%macro digitProd 1
+%%.digitProd:
+        ; original =            rsi
+        ; dividend =            rax
+        ; divisor == 10 =       rbx
+        ; remainder =           rdx
+        ; sum =                 rdi
+        ; rcx                   ZERO
+        ; -- save regs
+        fpushregs
+
+        xor rcx,rcx             ; for conditional move cmovz
+        mov rsi, %1             ; original number
+        mov rbx, 10             ; divisor
+        mov rdi, 1              ; initialize sum w/ 1 for multiplication
+        %%.loop:
+                mov rax, rsi    ; s/u dividend
+                xor rdx, rdx    ; clear remainder
+                div rbx         ; calc original % 10 by taking value in rdx
+
+                cmp rdx, 0      ; compare quotient digit to 0
+                cmovz rax, rcx  ; if quotient is 0 then set rax to 0 then exit
+                jz %%.exit
+                imul rdi, rdx   ; else: mul remainder (original % 10) to sum
+
+                mov rax, rsi    ; s/u dividend
+                xor rdx, rdx    ; clear reminder
+                div rbx         ; reduce;i.e., original / 10
+                mov rsi, rax    ; copy quotient ; new reduce value
+
+                cmp rsi, 0      ; if zero then all digits have been dealt with
+                jnz %%.loop
+
+                mov rax, rdi    ; return sum in rax
+        %%.exit:
+        fpopregs
+%endmacro
