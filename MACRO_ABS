@@ -1,0 +1,10 @@
+; ---- abs
+%macro abs 1
+        fpushregs
+                mov rax, %1
+                test rax, rax
+                jns %%pos
+                neg rax
+        %%pos:
+        fpopregs
+%endmacro
