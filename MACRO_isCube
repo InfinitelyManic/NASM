@@ -1,0 +1,53 @@
+
+; -- isCube ... using variation of Halley's method to est cube root; b = ((a^3+2R)/(a^3+0.5R))*a/2
+%macro isCube 1
+        fpushregs
+        mov rax, %1             ; copy variable to GPR to transfer XMM
+        cvtsi2sd xmm0, rax      ; R
+        xor rax, rax            ; zero out rax
+        movsd xmm1, xmm0        ; prep for an initial quess
+
+        sqrtsd xmm1, xmm1       ; a^1/2
+        sqrtsd xmm1, xmm1       ; a^1/4 - a good initial guess ???
+
+        mov rdx, 5              ; total iterations --- resolve this later ???
+        %%loop0:
+                movsd xmm2, xmm1        ; copy a
+                mulsd xmm2, xmm1        ; a^2
+                mulsd xmm2, xmm1        ; a^3
+
+                mov rbx, 2              ; prep 2
+                cvtsi2sd xmm3, rbx      ; 2
+                movsd xmm4, xmm0        ; copy R
+                mulsd xmm4, xmm3        ; 2R
+                addsd xmm4, xmm2        ; a^3+2R
+
+                mov rcx, 1              ; prep 1
+                cvtsi2sd xmm5, rcx      ; 1
+                divsd xmm5, xmm3        ; 0.5
+                mulsd xmm5, xmm0        ; 0.5R
+                addsd xmm5, xmm2        ; a^3+0.5R
+
+                divsd xmm4, xmm5        ; (a^3+2R)/(a^3+0.5R)
+
+                divsd xmm1, xmm3        ; a/2
+
+                mulsd xmm4, xmm1        ; b = (a^3+2R)/(a^3+0.5R) * a/2
+
+                movsd xmm1, xmm4        ; b is the new a  -  for additional iterations
+                ; --- test b^3 == R
+                roundsd xmm4, xmm4, 0   ; round b
+                movsd xmm5, xmm4        ; copy b
+                mulsd xmm5, xmm4        ; b^2
+                mulsd xmm5, xmm4        ; b^3
+                ucomisd xmm5, xmm0      ; compare b^3 to R
+                jz %%true               ; if ZF = 0 then jump to %%true
+        dec rdx
+        cmp rdx, 0
+        jnz %%loop0
+        jmp %%end
+%%true:
+        mov rax, 1
+%%end:
+        fpopregs
+%endmacro
