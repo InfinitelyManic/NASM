@@ -1,0 +1,59 @@
+        ; ****** ARRAY  MACROS *********************
+        %macro swap 2 ; exchange elements of the array
+        %%.swap:
+        push rsi
+        push r8
+        push r9
+
+        ; uses r8 & r9; array in rsi
+                mov r8b, [rsi+%1]
+                mov r9b, [rsi+%2]
+                mov [rsi+%1], r9b
+                mov [rsi+%2], r8b
+
+        pop r9
+        pop r8
+        pop rsi
+
+        %endmacro
+        ; ------------------------------
+
+        %macro reverse_array 1  ; reverse the order of an array ; array
+        %%.rev_array:
+        ; uses r8, rcx; assumes array in rsi
+        push r8
+        push rcx
+        push rsi
+
+        xor r8,r8
+
+        lea rsi, [%1]
+        mov rcx, LEN
+        %%.loop0:
+                mov r8b, [rsi+rcx]
+                push r8
+        dec rcx
+        cmp rcx, 0
+        jnl %%.loop0
+        ;--------------
+        mov rcx, LEN
+        %%.loop1:
+               mov r8b, [rsi+rcx]
+                push r8
+        dec rcx
+        cmp rcx, 0
+        jnl %%.loop0
+        ;--------------
+        mov rcx, LEN
+        %%.loop1:
+                pop r8
+                mov [rsi+rcx], r8b
+        dec rcx
+        cmp rcx, 0
+        jnl %%.loop1
+
+        pop rsi
+        pop rcx
+        pop r8
+        %endmacro
+        ; ---------------------------------
