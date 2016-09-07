@@ -1,0 +1,19 @@
+; -- isSquare
+%macro isSqr 1
+        fpushregs               ; an expensive push macro
+        mov rax, %1             ; mov variable to gpr
+        cvtsi2sd xmm0,rax       ; R
+        xor rax,rax             ; set rax to 0
+        movsd xmm1,xmm0         ; copy R
+        sqrtsd xmm1,xmm1        ; sqrt(R)
+        movsd xmm2,xmm1         ; copy sqrt(R)
+        roundsd xmm2,xmm2, 0    ; round(sqrt(R))
+        mulsd xmm2,xmm2         ; round(sqrt(R))^2
+        ucomisd xmm2,xmm0       ; compare R to round(sqrt(R))^2
+        jz %%true               ; if ZF == 0 then true
+        jnz %%end
+%%true:
+        mov rax, 1
+%%end:
+        fpopregs                ; an expensive pop macro
+%endmacro
