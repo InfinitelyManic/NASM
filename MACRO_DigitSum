@@ -1,0 +1,30 @@
+; ----sumDigits .... returns sum of digits in rax
+%macro digitSum 1
+%%.digitSum:
+        ; original =            rsi
+        ; dividend =            rax
+        ; divisor == 10 =       rbx
+        ; remainder =           rdx
+        ; sum =                 rdi
+        ; -- save regs
+        fpushregs
+
+        mov rsi, %1             ; original
+        mov rbx, 10             ; divisor
+        xor rdi, rdi            ; initialize sum
+        %%.loop:
+                mov rax, rsi    ; s/u dividend
+                xor rdx, rdx    ; clear remainder
+                div rbx         ; calc original % 10 by taking value in rdx
+                add rdi, rdx    ; add remainder (original % 10) to sum
+
+                mov rax, rsi    ; s/u dividend
+                xor rdx, rdx    ; clear reminder
+                div rbx         ; reduce;i.e., original / 10
+                mov rsi, rax    ; copy quotient ; new reduce value
+
+                cmp rsi, 0      ; if zero then all digits have been dealt with
+                jnz %%.loop
+        mov rax, rdi            ; return sum in rax
+        fpopregs
+%endmacro
