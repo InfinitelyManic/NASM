@@ -35,7 +35,6 @@ section .data
 
 section .text
         global main
-
 main:
         call _write
 
@@ -43,6 +42,8 @@ main:
         push dword 0
         mov eax, 1
         call _syscall
+        
+        
 ;struct sys_write_args {
 ;        syscallarg(int) fd;
 ;        syscallarg(const void *) buf;
