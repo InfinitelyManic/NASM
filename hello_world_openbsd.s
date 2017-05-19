@@ -16,8 +16,6 @@
 ;/usr/bin/ld: warning: creating a DT_TEXTREL in a shared object.
 
 ; file *
-
-; man elf
 ; hello_world:   ELF 32-bit LSB shared object, Intel 80386, version 1
 ; hello_world.o: ELF 32-bit LSB relocatable, Intel 80386, version 1
 ; hello_world.s: ASCII Pascal program text
