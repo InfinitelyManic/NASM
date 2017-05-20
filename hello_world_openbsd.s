@@ -12,8 +12,8 @@
 ; Thread model: posix
 ; gcc version 4.2.1 20070719
 
-;nasm -f elf32 hello_world.s -o hello_world.o && gcc hello_world.o -o hello_world
-;/usr/bin/ld: warning: creating a DT_TEXTREL in a shared object.
+; nasm -felf32 hello_world.s -o hello_world.o 
+; ld -melf_i386_obsd -nopie hello_world.o -o hello_world
 
 ; file *
 ; hello_world:   ELF 32-bit LSB shared object, Intel 80386, version 1
@@ -27,15 +27,23 @@
 ;                contain a .note.openbsd.ident section to identify themselves,
 ;                for the kernel to bypass any compatibility ELF binary
 ;                emulation tests when loading the file.
-section ".note.openbsd.ident"
+section .note.openbsd.ident 
+align 2
+dd 8
+dd 4
+dd 1
+db 'OpenBSD',0
+dd 0
+align 2
+
 
 section .data
         msg:    db      `Hello World!\n`
         len     equ     $-msg
 
 section .text
-        global main
-main:
+        global _start
+_start:
         call _write
 
 ;_exit:
