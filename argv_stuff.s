@@ -37,6 +37,7 @@ _exit:
         mov rax, 60
         xor rdi, rdi
         syscall
+        
 _write:; rdi rsi rdx rcx r8 r9
         push rbp
         mov rbp, rsp
