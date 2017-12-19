@@ -1,5 +1,5 @@
 ; David @InfinitelyManic
-; nasm -g -f elf64 -F dwrf argv_stuff.s -o argv_stuff.o && gccargv_stuff.o -o argv_stuff
+; nasm -g -f elf64 -F dwarf argv_stuff.s -o argv_stuff.o && gcc argv_stuff.o -o argv_stuff
 
 section .bss
 section .data
